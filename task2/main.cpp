@@ -18,6 +18,7 @@ public:
         return *this;
     }
 private:
+    // iterable containter printer (set and vector in this case)
     template<typename T>
     void format_iterable(T& container) {
         auto begin_it = container.begin();
@@ -33,7 +34,7 @@ private:
         }
     }
 
-    //tuple printing
+    // tuple printing
     template<std::size_t...> struct seq{};
 
     template<std::size_t N, std::size_t... Is>
@@ -48,11 +49,7 @@ private:
         (void)tuple_iterator;
     }
 
-    template<typename T>
-    void format_helper(const T& element) {
-        buffer << element;
-    }
-
+    // vector printer
     template<typename T> 
     void format_helper(const std::vector<T> &v) {
         buffer << "[ ";
@@ -60,6 +57,7 @@ private:
         buffer << " ]";
     }
 
+    // set printer
     template<typename T> 
     void format_helper(const std::set<T> &s) {
         buffer << "{ ";
@@ -67,6 +65,7 @@ private:
         buffer << " }";
     }
 
+    // pair printer
     template<typename T1, typename T2> 
     void format_helper(const std::pair<T1, T2> &p) {
         buffer << "(";
@@ -76,15 +75,23 @@ private:
         buffer << ")";
     }
 
+    // tuple printer
     template<typename ...Args> 
     void format_helper(const std::tuple<Args...> &t) {
         buffer << "( ";
         tuple_printer(t, gen_seq<sizeof...(Args)>());
         buffer << " )";
     }
+
+    // default printer
+    template<typename T>
+    void format_helper(const T& element) {
+        buffer << element;
+    }
 private:
     std::stringstream buffer;
 };
+
 
 template<typename T>
 std::string format(const T& t) {
